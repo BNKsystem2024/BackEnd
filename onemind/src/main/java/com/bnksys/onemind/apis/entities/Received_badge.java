@@ -8,15 +8,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
-@Table(name = "Solved_problem")
-public class Solved_problem {
+@Table(name = "Received_badge")
+public class Received_badge {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,17 +25,10 @@ public class Solved_problem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_id", referencedColumnName = "id", nullable = false)
-    private Quiz quiz;
-
-    @Column(name = "solved_date", nullable = false, length = 8, columnDefinition = "CHAR(8)")
-    private String solvedDate;
-
-    @Column(name = "is_correct", nullable = false)
-    private Integer isCorrect;
-
+    @JoinColumn(name = "badge_id", nullable = false)
+    private Badge badge;
 }
