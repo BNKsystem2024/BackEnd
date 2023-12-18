@@ -1,5 +1,8 @@
 package com.bnksys.onemind.apis.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,10 +27,12 @@ public class Solved_problem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "quiz_id", referencedColumnName = "id", nullable = false)
     private Quiz quiz;
 
@@ -35,6 +40,6 @@ public class Solved_problem {
     private String solvedDate;
 
     @Column(name = "is_correct", nullable = false)
-    private Integer isCorrect;
+    private Boolean isCorrect;
 
 }
