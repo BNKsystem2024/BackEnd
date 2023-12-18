@@ -1,11 +1,14 @@
 package com.bnksys.onemind.apis.controllers;
 
 import com.bnksys.onemind.apis.dtos.LoginRequest;
+import com.bnksys.onemind.apis.dtos.RankersResponse;
 import com.bnksys.onemind.apis.dtos.UserInfoResponse;
 import com.bnksys.onemind.apis.entities.User;
+import com.bnksys.onemind.apis.services.SolvedProblemService;
 import com.bnksys.onemind.apis.services.UserService;
 import com.bnksys.onemind.supports.codes.ErrorCode;
 import com.bnksys.onemind.supports.responses.ApiResponseUtil;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SolvedProblemService solvedProblemService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -36,8 +42,9 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/members/rankers")
-//    public ResponseEntity<?> find_rankers(){
-//
-//    }
+    @GetMapping("/members/rankers")
+    public ResponseEntity<?> findRankers() {
+        List<RankersResponse> rankers = solvedProblemService.findRankers();
+        return ResponseEntity.ok(rankers);
+    }
 }
