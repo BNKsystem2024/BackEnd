@@ -33,8 +33,10 @@ public class OwnService {
     public OwnSolvedQuiz getOwnSolvedQuiz(Solved_problem solvedQuiz) {
         Quiz quiz = quizRepository.findById(solvedQuiz.getId())
                                   .get();
-        return new OwnSolvedQuiz(quiz.getQuestion(), solvedQuiz.getSolvedDate(),
-            solvedQuiz.getIsCorrect());
+
+        return new OwnSolvedQuiz(quiz.getQuestion(),
+            solvedQuiz.getSolvedDate(), solvedQuiz.getIsCorrect(), quiz.getLevel());
+        
     }
 
     public OwnSolvedQuizDetailResponse getOwnSolvedQuizDetail(Integer id, Integer quizId) {
