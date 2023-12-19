@@ -2,6 +2,7 @@ package com.bnksys.onemind.apis.repositories;
 
 
 import com.bnksys.onemind.apis.entities.Solved_problem;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,5 +28,7 @@ public interface SolvedProblemRepository extends JpaRepository<Solved_problem, L
         "ORDER BY cnt DESC " +
         "LIMIT 1) AS subquery", nativeQuery = true)
     Optional<Integer> findTopIncorrectAnswerer();
+
+    List<Solved_problem> findByUserId(Integer userId);
 
 }
