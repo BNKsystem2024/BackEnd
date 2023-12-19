@@ -3,6 +3,7 @@ package com.bnksys.onemind.apis.services;
 import com.bnksys.onemind.apis.dtos.QuizResponse;
 import com.bnksys.onemind.apis.entities.User;
 import com.bnksys.onemind.apis.repositories.QuizRepository;
+import com.bnksys.onemind.apis.repositories.ReceivedBadgeRepository;
 import com.bnksys.onemind.apis.repositories.SolvedProblemRepository;
 import com.bnksys.onemind.apis.repositories.UserRepository;
 import java.time.LocalDate;
@@ -19,11 +20,14 @@ public class QuizService {
 
     private final SolvedProblemRepository solvedProblemRepository;
 
+    private final ReceivedBadgeRepository receivedBadgeRepository;
+
     public QuizService(UserRepository userRepository, QuizRepository quizRepository
-                        , SolvedProblemRepository solvedProblemRepository) {
+                        , SolvedProblemRepository solvedProblemRepository, ReceivedBadgeRepository receivedBadgeRepository) {
         this.userRepository = userRepository;
         this.quizRepository = quizRepository;
         this.solvedProblemRepository = solvedProblemRepository;
+        this.receivedBadgeRepository = receivedBadgeRepository;
     }
 
     public QuizResponse findRandom_Quiz(int userId) throws Exception {
@@ -49,6 +53,18 @@ public class QuizService {
         int isCorrectValue = isCorrect ? 1 : 0;
 
         solvedProblemRepository.saveSolvedQuiz(1, quizId, solvedDate, isCorrectValue);
+        if(true == isCorrect){
+            int correctCount = solvedProblemRepository.countCorrectAnswers(1);
+            if (1 == correctCount){
+                receivedBadgeRepository.saveReceived_Badge(1);
+            }else if(10 == correctCount){
+                receivedBadgeRepository.saveReceived_Badge(2);
+            }else if(20 == correctCount){
+                receivedBadgeRepository.saveReceived_Badge(3);
+            }else if(30 == correctCount){
+                receivedBadgeRepository.saveReceived_Badge(4);
+            }
+        }
 
         return true;
     }
@@ -62,7 +78,5 @@ public class QuizService {
             return 3;
         }
     }
-
-
 
 }
