@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OwnBadgesResponse {
 
+    @JsonProperty("data")
     private List<OwnBadge> OwnBadgeList;
 
     @Data

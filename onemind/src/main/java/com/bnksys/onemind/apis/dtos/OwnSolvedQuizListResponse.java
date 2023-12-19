@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OwnSolvedQuizListResponse {
 
+    @JsonProperty("data")
     private List<OwnSolvedQuiz> ownSolvedQuizList;
 
     @Getter
