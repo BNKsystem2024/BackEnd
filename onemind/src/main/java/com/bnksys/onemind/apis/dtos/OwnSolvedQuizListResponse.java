@@ -29,7 +29,7 @@ public class OwnSolvedQuizListResponse {
         @JsonProperty("is_correct")
         private Boolean isCorrect;
 
-        @JsonProperty("level")g
+        @JsonProperty("level")
         private Integer level;
     }
 
