@@ -27,7 +27,7 @@ public class OwnController {
     }
 
     @GetMapping(value = "/quizzes/solved")
-    public ResponseEntity<?> getOwnSolvedQuizzes(@RequestParam(name = "user_id") Integer userId,
+    public ResponseEntity<?> getOwnSolvedQuizzes(
         @RequestParam(required = false, name = "page") Integer page,
         @RequestParam(required = false, name = "quiz_id") Integer quizId
 
