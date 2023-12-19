@@ -1,5 +1,6 @@
 package com.bnksys.onemind.apis.controllers;
 
+import com.bnksys.onemind.apis.dtos.OwnBadgesResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse;
 import com.bnksys.onemind.apis.services.OwnService;
 import com.bnksys.onemind.supports.codes.ErrorCode;
@@ -20,10 +21,11 @@ public class OwnController {
     private final OwnService ownService;
 
     @GetMapping(value = "/badges")
-    public ResponseEntity<Void> getOwnBadges(@RequestParam(name = "user_id") Integer userId) {
+    public ResponseEntity<OwnBadgesResponse> getOwnBadges() {
 
-        // TODO: return Dto
-        return ApiResponseUtil.success();
+        OwnBadgesResponse ownBadgesResponse = ownService.getOwnBadges(id);
+
+        return ApiResponseUtil.success(ownBadgesResponse);
     }
 
     @GetMapping(value = "/quizzes/solved")
