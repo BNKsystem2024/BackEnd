@@ -1,6 +1,7 @@
 package com.bnksys.onemind.apis.controllers;
 
 import com.bnksys.onemind.apis.dtos.OwnBadgesResponse;
+import com.bnksys.onemind.apis.dtos.OwnSolvedQuizDetailResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse;
 import com.bnksys.onemind.apis.services.OwnService;
 import com.bnksys.onemind.supports.codes.ErrorCode;
@@ -31,7 +32,7 @@ public class OwnController {
     @GetMapping(value = "/quizzes/solved")
     public ResponseEntity<?> getOwnSolvedQuizzes(
         @RequestParam(required = false, name = "page") Integer page,
-        @RequestParam(required = false, name = "quiz_id") Integer quizId
+        @RequestParam(required = false, name = "quiz_id") Long quizId
 
     ) {
         if (page != null) {
@@ -39,7 +40,9 @@ public class OwnController {
                 id, page);
             return ApiResponseUtil.success(ownSolvedQuizListResponse);
         } else if (quizId != null) {
-            // TODO: Return detail Quiz Dto
+            OwnSolvedQuizDetailResponse ownSolvedQuizDetailResponse = ownService.getOwnSolvedQuizDetail(
+                id, quizId);
+            return ApiResponseUtil.success(ownSolvedQuizDetailResponse);
         }
 
         return ApiResponseUtil.error(ErrorCode.BAD_REQUEST);

@@ -12,6 +12,8 @@ import com.bnksys.onemind.apis.entities.Solved_problem;
 import com.bnksys.onemind.apis.repositories.QuizRepository;
 import com.bnksys.onemind.apis.repositories.ReceivedBadgeRepository;
 import com.bnksys.onemind.apis.repositories.SolvedProblemRepository;
+import com.bnksys.onemind.exceptions.CustomException;
+import com.bnksys.onemind.supports.codes.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,12 +44,17 @@ public class OwnService {
 
         return new OwnSolvedQuiz(quiz.getQuestion(),
             solvedQuiz.getSolvedDate(), solvedQuiz.getIsCorrect(), quiz.getLevel());
-
     }
 
-    public OwnSolvedQuizDetailResponse getOwnSolvedQuizDetail(Integer id, Integer quizId) {
+    public OwnSolvedQuizDetailResponse getOwnSolvedQuizDetail(Integer id, Long quizId) {
 
-        return null;
+        Quiz quiz = solvedProblemRepository.findByUserIdAndQuizId(id, quizId)
+                                           .orElseThrow(
+                                               () -> new CustomException(ErrorCode.BAD_REQUEST))
+                                           .getQuiz();
+
+        return new OwnSolvedQuizDetailResponse(quiz.getQuestion(), quiz.getAnswer(),
+            quiz.getCommentary(), quiz.getLevel());
     }
 
     public OwnBadgesResponse getOwnBadges(Integer userId) {
