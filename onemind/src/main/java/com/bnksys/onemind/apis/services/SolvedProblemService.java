@@ -42,7 +42,7 @@ public class SolvedProblemService {
             Optional<User> userOptional = userRepository.findById(userId);
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                rankers.add(new RankersResponse(user.getUsername(), user.getDept().getDpnm(), "이달의 정답왕"));
+                rankers.add(new RankersResponse(user.getUsername(), user.getDept().getDpnm(), "이달의 오답왕"));
             }
         }
 
