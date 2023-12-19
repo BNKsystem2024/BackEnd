@@ -40,6 +40,9 @@ public interface SolvedProblemRepository extends JpaRepository<Solved_problem, L
         @Param("solvedDate") String solvedDate,
         @Param("isCorrect") int isCorrect);
 
+    @Query("SELECT COUNT(*) FROM Solved_problem sp WHERE sp.user.id = :userId AND sp.isCorrect = true")
+    int countCorrectAnswers(@Param("userId") int userId);
+
     List<Solved_problem> findByUserId(Integer userId);
 
 }
