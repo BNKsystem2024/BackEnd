@@ -3,6 +3,7 @@ package com.bnksys.onemind.apis.services;
 import com.bnksys.onemind.apis.dtos.OwnBadgesResponse;
 import com.bnksys.onemind.apis.dtos.OwnBadgesResponse.OwnBadge;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizDetailResponse;
+import com.bnksys.onemind.apis.dtos.OwnSolvedQuizInfosResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse.OwnSolvedQuiz;
 import com.bnksys.onemind.apis.entities.Badge;
@@ -14,6 +15,7 @@ import com.bnksys.onemind.apis.repositories.ReceivedBadgeRepository;
 import com.bnksys.onemind.apis.repositories.SolvedProblemRepository;
 import com.bnksys.onemind.exceptions.CustomException;
 import com.bnksys.onemind.supports.codes.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -71,5 +73,19 @@ public class OwnService {
         Badge badge = receivedBadge.getBadge();
 
         return new OwnBadge(badge.getId(), badge.getBadgeName(), badge.getBadgeSub());
+    }
+
+    public OwnSolvedQuizInfosResponse getOwnSolvedQuizInfos(Integer id) {
+
+        List<Solved_problem> solvedProblemList = solvedProblemRepository.findByUserId(id);
+
+        Long totalCnt = (long) solvedProblemList.size();
+        Long correctCnt = solvedProblemList.stream()
+                                           .filter(Solved_problem::getIsCorrect)
+                                           .count();
+        Long incorrectCnt = totalCnt - correctCnt;
+        Long correctRate = totalCnt > 0 ? Math.round((double) correctCnt / totalCnt * 100) : 0;
+
+        return new OwnSolvedQuizInfosResponse(totalCnt, correctCnt, incorrectCnt, correctRate);
     }
 }

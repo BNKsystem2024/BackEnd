@@ -2,8 +2,10 @@ package com.bnksys.onemind.apis.controllers;
 
 import com.bnksys.onemind.apis.dtos.OwnBadgesResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizDetailResponse;
+import com.bnksys.onemind.apis.dtos.OwnSolvedQuizInfosResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse;
 import com.bnksys.onemind.apis.services.OwnService;
+import com.bnksys.onemind.exceptions.CustomException;
 import com.bnksys.onemind.supports.codes.ErrorCode;
 import com.bnksys.onemind.supports.responses.ApiResponseUtil;
 import lombok.RequiredArgsConstructor;
@@ -35,25 +37,27 @@ public class OwnController {
         @RequestParam(required = false, name = "quiz_id") Long quizId
 
     ) {
-        if (page != null) {
+
+        if (page != null && quizId == null) {
             OwnSolvedQuizListResponse ownSolvedQuizListResponse = ownService.getOwnSolvedQuizList(
                 id, page);
             return ApiResponseUtil.success(ownSolvedQuizListResponse);
-        } else if (quizId != null) {
+        } else if (quizId != null && page == null) {
             OwnSolvedQuizDetailResponse ownSolvedQuizDetailResponse = ownService.getOwnSolvedQuizDetail(
                 id, quizId);
             return ApiResponseUtil.success(ownSolvedQuizDetailResponse);
+        } else {
+            throw new CustomException(ErrorCode.INVALID_TYPE_VALUE);
         }
-
-        return ApiResponseUtil.error(ErrorCode.BAD_REQUEST);
     }
 
     @GetMapping(value = "/quizzes/solved/infos")
-    public ResponseEntity<Void> getOwnSolvedQuizInfos(
-        @RequestParam(name = "user_id") Integer userId) {
+    public ResponseEntity<OwnSolvedQuizInfosResponse> getOwnSolvedQuizInfos() {
+
+        OwnSolvedQuizInfosResponse ownSolvedQuizInfosResponse = ownService.getOwnSolvedQuizInfos(
+            id);
         // TODO: 문제의 푼 문제 전체 개수 대비 정답 퍼센트, 오답 개수, 정답 개수
-        // TODO: return Dto
-        return ApiResponseUtil.success();
+        return ApiResponseUtil.success(ownSolvedQuizInfosResponse);
     }
 
 }
