@@ -44,5 +44,17 @@ public class Quiz {
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Solved_problem> solvedProblems = new ArrayList<>();
+    
+    private Quiz(String question, String answer, String commentary, Integer level) {
+        this.question = question;
+        this.answer = answer;
+        this.commentary = commentary;
+        this.stcd = "01"; // TODO: Check stcd
+        this.level = level;
+    }
+
+    public static Quiz of(String question, String answer, String commentary, Integer level) {
+        return new Quiz(question, answer, commentary, level);
+    }
 
 }
