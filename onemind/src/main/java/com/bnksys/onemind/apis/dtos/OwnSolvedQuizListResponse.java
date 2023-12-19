@@ -18,7 +18,7 @@ public class OwnSolvedQuizListResponse {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public class OwnSolvedQuiz {
+    public static class OwnSolvedQuiz {
 
         @JsonProperty("question")
         private String question;
@@ -27,6 +27,6 @@ public class OwnSolvedQuizListResponse {
         private String solvedDate;
 
         @JsonProperty("is_correct")
-        private String isCorrect;
+        private Boolean isCorrect;
     }
 }
