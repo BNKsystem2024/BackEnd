@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "Quiz")
+@ToString
 public class Quiz {
 
     @Id
@@ -44,7 +46,7 @@ public class Quiz {
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Solved_problem> solvedProblems = new ArrayList<>();
-    
+
     private Quiz(String question, String answer, String commentary, Integer level) {
         this.question = question;
         this.answer = answer;

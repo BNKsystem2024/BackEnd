@@ -1,6 +1,5 @@
 package com.bnksys.onemind.apis.services;
 
-import com.bnksys.onemind.apis.dtos.RpaCreateQuizRequest;
 import com.bnksys.onemind.apis.entities.Quiz;
 import com.bnksys.onemind.apis.repositories.QuizRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,10 +17,13 @@ public class RpaService {
 
     private final QuizRepository quizRepository;
 
-    public Integer saveQuizFromGptAnswerProcedure(RpaCreateQuizRequest request) {
+    public Integer saveQuizFromGptAnswerProcedure(String gptAnswer) {
 
-        String gptAnswer = request.getGptAnswer();
+        System.out.println(gptAnswer);
         List<Quiz> quizList = getQuizList(gptAnswer);
+
+        System.out.println(quizList);
+
         quizRepository.saveAll(quizList);
 
         return quizList.size();
@@ -47,6 +49,7 @@ public class RpaService {
                 String question = (String) map.get("quiz");
                 String answer = (String) map.get("answer");
                 String commentary = (String) map.get("commentary");
+
                 Integer level = (Integer) map.get("level");
 
                 Quiz newQuiz = Quiz.of(question, answer, commentary, level);
