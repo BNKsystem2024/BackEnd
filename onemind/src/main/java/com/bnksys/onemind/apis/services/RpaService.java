@@ -1,7 +1,12 @@
 package com.bnksys.onemind.apis.services;
 
+import com.bnksys.onemind.apis.dtos.RpaCreateQuizResponse;
+import com.bnksys.onemind.apis.entities.Keyword;
 import com.bnksys.onemind.apis.entities.Quiz;
+import com.bnksys.onemind.apis.entities.Related_keyword;
+import com.bnksys.onemind.apis.repositories.KeywordRepository;
 import com.bnksys.onemind.apis.repositories.QuizRepository;
+import com.bnksys.onemind.apis.repositories.RelatedRepository;
 import com.bnksys.onemind.exceptions.CustomException;
 import com.bnksys.onemind.supports.codes.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -22,9 +28,11 @@ import org.springframework.stereotype.Service;
 public class RpaService {
 
     private final QuizRepository quizRepository;
+    private final RelatedRepository relatedRepository;
+    private final KeywordRepository keywordRepository;
 
     @Transactional
-    public Integer saveQuizFromGptAnswerProcedure(String gptAnswer) {
+    public RpaCreateQuizResponse saveQuizFromGptAnswerProcedure(String gptAnswer) {
 
         System.out.println("-----입력된 값------");
         System.out.println(gptAnswer);
@@ -32,34 +40,64 @@ public class RpaService {
         // 1. Convert to Map
         List<Map<String, Object>> mapList = getMapFromObjectMapper(gptAnswer);
 
-        // 2. Quiz 가져오기
+        // 2. Quiz, Keyword 가져오기
         Map<String, Quiz> quizList = getQuizListFromMap(mapList);
+        Map<String, List<String>> keywordList = getKeywordListFromMap(mapList);
 
-        // 3. Keyword 가져오기
-//        Map<String, List<String>> keywordList = getKeywordListFromMap(mapList);
-        System.out.println("-----JSON 형태 추출 결과------");
-        System.out.println(quizList);
+        int savedKeywordCnt = 0;
+        int savedQuizCnt = 0;
+        int savedRelatedKeywordCnt = 0;
 
-//        quizRepository.saveAll(quizList);
+        // 3. 저장하기
+        for (String key : quizList.keySet()) {
+            List<String> keywords = keywordList.get(key);
+            List<Keyword> savedKeywordList = new ArrayList<>();
 
-        return quizList.size();
+            // save Keyword (exclude Already Save)
+            for (String keyword : keywords) {
+                if (keywordRepository.existsByWord(keyword)) {
+                    continue;
+                }
+                savedKeywordList.add(keywordRepository.save(Keyword.of(keyword)));
+                savedKeywordCnt++;
+            }
+
+            // save Quiz
+            Quiz quiz = quizRepository.save(quizList.get(key));
+            savedQuizCnt++;
+
+            // save RelatedKeyword (as Keyword Cnt)
+            for (Keyword savedKeyword : savedKeywordList) {
+                Related_keyword relatedKeyword = Related_keyword.of(savedKeyword, quiz);
+                relatedRepository.save(relatedKeyword);
+                savedRelatedKeywordCnt++;
+            }
+        }
+
+        return new RpaCreateQuizResponse(savedKeywordCnt, savedQuizCnt, savedRelatedKeywordCnt);
     }
 
-    private void getKeywordListFromMap(List<Map<String, Object>> mapList) {
-        Map<String, List<String>> mapForQuiz = new HashMap<>();
+    private Map<String, List<String>> getKeywordListFromMap(List<Map<String, Object>> mapList) {
+        Map<String, List<String>> mapForKeyword = new HashMap<>();
 
         for (Map<String, Object> map : mapList) {
 
-            // Handling level type Error (String || Integer)
-            Integer level = null;
-            if (map.containsKey("level")) {
-                Object levelObj = map.get("level");
-                level = checkInvalidLevelType(levelObj);
-            }
+            String question = map.containsKey("quiz") ? (String) map.get("quiz") : null;
 
-//            mapForQuiz.put(question, newQuiz);
+            List<String> keywords = new LinkedList<>();
+            if (map.containsKey("keyword") && map.get("keyword") instanceof List<?>) {
+                // JSON 배열을 Java List<String>으로 변환
+                List<?> keywordObjList = (List<?>) map.get("keyword");
+                for (Object keywordObj : keywordObjList) {
+                    if (keywordObj instanceof String) {
+                        keywords.add((String) keywordObj);
+                    }
+                }
+            }
+            mapForKeyword.put(question, keywords);
         }
 
+        return mapForKeyword;
     }
 
     private Map<String, Quiz> getQuizListFromMap(List<Map<String, Object>> mapList) {

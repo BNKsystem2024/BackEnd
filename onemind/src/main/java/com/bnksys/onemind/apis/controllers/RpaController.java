@@ -22,7 +22,10 @@ public class RpaController {
     public ResponseEntity<RpaCreateQuizResponse> saveQuiz(
         @RequestParam("gpt_answer") String gptAnswer) {
 
+        RpaCreateQuizResponse response = rpaService.saveQuizFromGptAnswerProcedure(gptAnswer);
+        System.out.println(response);
+
         return ApiResponseUtil.success(
-            new RpaCreateQuizResponse(rpaService.saveQuizFromGptAnswerProcedure(gptAnswer)));
+            response);
     }
 }

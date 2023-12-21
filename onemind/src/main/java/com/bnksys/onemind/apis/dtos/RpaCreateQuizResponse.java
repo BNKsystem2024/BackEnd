@@ -11,7 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RpaCreateQuizResponse {
 
-    @JsonProperty("result_cnt")
-    private Integer resultCnt;
+    @JsonProperty("save_keyword_cnt")
+    private Integer saveKeywordCnt;
+
+    @JsonProperty("save_quiz_cnt")
+    private Integer saveQuizCnt;
+
+    @JsonProperty("save_related_keyword_cnt")
+    private Integer saveRelatedKeywordCnt;
 
 }

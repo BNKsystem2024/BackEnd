@@ -11,11 +11,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Table(name = "Received_keyword")
-public class Received_keyword {
+@Table(name = "Related_keyword")
+@NoArgsConstructor
+public class Related_keyword {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,5 +34,13 @@ public class Received_keyword {
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
+    protected Related_keyword(Keyword keyword, Quiz quiz) {
+        this.keyword = keyword;
+        this.quiz = quiz;
+    }
+
+    public static Related_keyword of(Keyword keyword, Quiz quiz) {
+        return new Related_keyword(keyword, quiz);
+    }
 
 }
