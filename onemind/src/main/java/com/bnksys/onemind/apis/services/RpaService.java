@@ -2,6 +2,8 @@ package com.bnksys.onemind.apis.services;
 
 import com.bnksys.onemind.apis.entities.Quiz;
 import com.bnksys.onemind.apis.repositories.QuizRepository;
+import com.bnksys.onemind.exceptions.CustomException;
+import com.bnksys.onemind.supports.codes.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,9 +21,11 @@ public class RpaService {
 
     public Integer saveQuizFromGptAnswerProcedure(String gptAnswer) {
 
+        System.out.println("-----입력된 값------");
         System.out.println(gptAnswer);
         List<Quiz> quizList = getQuizList(gptAnswer);
 
+        System.out.println("-----JSON 형태 추출 결과------");
         System.out.println(quizList);
 
         quizRepository.saveAll(quizList);
@@ -42,15 +46,35 @@ public class RpaService {
                 // 추출한 JSON 문자열
                 String json = matcher.group();
 
-                // JSON을 Map 객체로 변환
+                // JSON convert to Map
                 Map<String, Object> map = objectMapper.readValue(json, Map.class);
 
-                // 필드 추출
-                String question = (String) map.get("quiz");
-                String answer = (String) map.get("answer");
-                String commentary = (String) map.get("commentary");
+                // extract field
+                String question = map.containsKey("quiz") ? (String) map.get("quiz") : null;
+                String answer = map.containsKey("answer") ? (String) map.get("answer") : null;
+                String commentary =
+                    map.containsKey("commentary") ? (String) map.get("commentary") : null;
 
-                Integer level = (Integer) map.get("level");
+                // filed name error handling
+                if (commentary == null || commentary.isEmpty()) {
+                    commentary =
+                        map.containsKey("commentery") ? (String) map.get("commentery") : null;
+                }
+
+                // level이 String값으로 들어왔을 경우 예외처리하기
+                Integer level = null;
+                if (map.containsKey("level")) {
+                    Object levelObj = map.get("level");
+                    if (levelObj instanceof Integer) {
+                        level = (Integer) levelObj;
+                    } else if (levelObj instanceof String) {
+                        try {
+                            level = Integer.parseInt((String) levelObj);
+                        } catch (NumberFormatException ex) {
+                            throw new CustomException(ErrorCode.INCORRECT_LEVEL_TYPE);
+                        }
+                    }
+                }
 
                 Quiz newQuiz = Quiz.of(question, answer, commentary, level);
                 quizList.add(newQuiz);
@@ -60,5 +84,11 @@ public class RpaService {
         }
 
         return quizList;
+    }
+
+
+    private boolean checkInvalidLevelType(Object levelObj) {
+
+        return false;
     }
 }

@@ -16,6 +16,7 @@ public enum ErrorCode {
     JACKSON_EXCEPTION(400, "Jackson Core Exception"),
     VALIDATION_ERROR(400, "Validation Exception"),
     MISSING_HEADER(400, "Header data missing"),
+    INCORRECT_LEVEL_TYPE(400, "The type of 'level' is incorrect."),
 
     UNAUTHORIZED(401, "Unauthorized"),
 
