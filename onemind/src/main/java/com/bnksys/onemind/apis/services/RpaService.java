@@ -49,18 +49,17 @@ public class RpaService {
     private void getKeywordListFromMap(List<Map<String, Object>> mapList) {
         Map<String, List<String>> mapForQuiz = new HashMap<>();
 
-//        for (Map<String, Object> map : mapList) {
-//
-//            // Handling level type Error (String || Integer)
-//            Integer level = null;
-//            if (map.containsKey("level")) {
-//                Object levelObj = map.get("level");
-//                level = checkInvalidLevelType(levelObj);
-//            }
-//
-//            Quiz newQuiz = Quiz.of(question, answer, commentary, level);
+        for (Map<String, Object> map : mapList) {
+
+            // Handling level type Error (String || Integer)
+            Integer level = null;
+            if (map.containsKey("level")) {
+                Object levelObj = map.get("level");
+                level = checkInvalidLevelType(levelObj);
+            }
+
 //            mapForQuiz.put(question, newQuiz);
-//        }
+        }
 
     }
 
@@ -115,39 +114,6 @@ public class RpaService {
         }
         return mapList;
     }
-
-//    public List<Quiz> getQuizList(String gptAnswer) {
-//
-//        List<Quiz> quizList = new LinkedList<>();
-//        while (matcher.find()) {
-//            try {
-//                // 추출한 JSON 문자열
-//                String json = matcher.group();
-//
-//                // JSON convert to Map
-//                Map<String, Object> map = objectMapper.readValue(json, Map.class);
-//
-//                // extract field
-//
-//                // Handling Keyword
-//                List<String> keywords = new LinkedList<>();
-//                if (map.containsKey("keyword") && map.get("keyword") instanceof List<?>) {
-//                    // JSON 배열을 Java List<String>으로 변환
-//                    List<?> keywordObjList = (List<?>) map.get("keyword");
-//                    for (Object keywordObj : keywordObjList) {
-//                        if (keywordObj instanceof String) {
-//                            keywords.add((String) keywordObj);
-//                        }
-//                    }
-//                }
-//
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return quizList;
-//    }
 
 
     private Integer checkInvalidLevelType(Object levelObj) {
