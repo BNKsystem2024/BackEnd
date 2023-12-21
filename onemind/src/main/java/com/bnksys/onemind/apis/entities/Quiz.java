@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -19,6 +20,7 @@ import lombok.ToString;
 @Setter
 @Table(name = "Quiz")
 @ToString
+@NoArgsConstructor
 public class Quiz {
 
     @Id
@@ -47,7 +49,7 @@ public class Quiz {
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Solved_problem> solvedProblems = new ArrayList<>();
 
-    private Quiz(String question, String answer, String commentary, Integer level) {
+    protected Quiz(String question, String answer, String commentary, Integer level) {
         this.question = question;
         this.answer = answer;
         this.commentary = commentary;

@@ -11,15 +11,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
-@Table(name = "Solved_problem")
-public class Solved_problem {
+@Table(name = "Received_keyword")
+public class Received_keyword {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,18 +24,13 @@ public class Solved_problem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
+    @JoinColumn(name = "keyword_id", nullable = false)
+    private Keyword keyword;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "quiz_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    @Column(name = "solved_date", nullable = false, length = 8, columnDefinition = "CHAR(8)")
-    private String solvedDate;
-
-    @Column(name = "is_correct", nullable = false)
-    private Boolean isCorrect;
 
 }
