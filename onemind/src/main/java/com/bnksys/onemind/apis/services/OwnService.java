@@ -13,8 +13,6 @@ import com.bnksys.onemind.apis.entities.Solved_problem;
 import com.bnksys.onemind.apis.repositories.QuizRepository;
 import com.bnksys.onemind.apis.repositories.ReceivedBadgeRepository;
 import com.bnksys.onemind.apis.repositories.SolvedProblemRepository;
-import com.bnksys.onemind.exceptions.CustomException;
-import com.bnksys.onemind.supports.codes.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -51,8 +49,10 @@ public class OwnService {
     public OwnSolvedQuizDetailResponse getOwnSolvedQuizDetail(Integer id, Long quizId) {
 
         Quiz quiz = solvedProblemRepository.findByUserIdAndQuizId(id, quizId)
-                                           .orElseThrow(
-                                               () -> new CustomException(ErrorCode.BAD_REQUEST))
+                                           .stream()
+                                           .filter(solvedProblem -> solvedProblem.getIsCorrect())
+                                           .toList()
+                                           .get(0)
                                            .getQuiz();
 
         return new OwnSolvedQuizDetailResponse(quiz.getQuestion(), quiz.getAnswer(),
