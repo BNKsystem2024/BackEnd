@@ -5,7 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum SuccessCode {
+public enum
+SuccessCode {
 
     OK(200, "OK"),
     CREATED(201, "Resource Created Successfully"),

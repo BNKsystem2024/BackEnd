@@ -3,6 +3,7 @@ package com.bnksys.onemind.apis.services;
 import com.bnksys.onemind.apis.dtos.OwnBadgesResponse;
 import com.bnksys.onemind.apis.dtos.OwnBadgesResponse.OwnBadge;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizDetailResponse;
+import com.bnksys.onemind.apis.dtos.OwnSolvedQuizDetailResponse.OwnSolvedQuizDetail;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizInfosResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse.OwnSolvedQuiz;
@@ -38,7 +39,7 @@ public class OwnService {
                                    .toList());
     }
 
-    public OwnSolvedQuiz getOwnSolvedQuiz(Solved_problem solvedQuiz) {
+    private OwnSolvedQuiz getOwnSolvedQuiz(Solved_problem solvedQuiz) {
 
         Quiz quiz = solvedQuiz.getQuiz();
 
@@ -48,15 +49,19 @@ public class OwnService {
 
     public OwnSolvedQuizDetailResponse getOwnSolvedQuizDetail(Integer id, Long quizId) {
 
-        Quiz quiz = solvedProblemRepository.findByUserIdAndQuizId(id, quizId)
-                                           .stream()
-                                           .filter(solvedProblem -> solvedProblem.getIsCorrect())
-                                           .toList()
-                                           .get(0)
-                                           .getQuiz();
+        return new OwnSolvedQuizDetailResponse(
+            solvedProblemRepository.findByUserIdAndQuizId(id, quizId)
+                                   .stream()
+                                   .map(solvedProblem -> getOwnSolvedQuizDetail(solvedProblem))
+                                   .toList());
+    }
 
-        return new OwnSolvedQuizDetailResponse(quiz.getQuestion(), quiz.getAnswer(),
-            quiz.getCommentary(), quiz.getLevel());
+    private OwnSolvedQuizDetail getOwnSolvedQuizDetail(Solved_problem solvedQuiz) {
+
+        Quiz quiz = solvedQuiz.getQuiz();
+
+        return new OwnSolvedQuizDetail(quiz.getQuestion(), quiz.getAnswer(), quiz.getCommentary(),
+            quiz.getLevel());
     }
 
     public OwnBadgesResponse getOwnBadges(Integer userId) {
