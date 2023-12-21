@@ -31,7 +31,7 @@ public class OwnService {
 
     public OwnSolvedQuizListResponse getOwnSolvedQuizList(Integer id, Integer page) {
 
-        Pageable pageable = PageRequest.of(page - 1, 5);
+        Pageable pageable = PageRequest.of(page - 1, 3);
 
         return new OwnSolvedQuizListResponse(
             solvedProblemRepository.findByUserId(id, pageable)

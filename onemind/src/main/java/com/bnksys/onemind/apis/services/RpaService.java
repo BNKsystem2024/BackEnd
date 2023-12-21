@@ -2,8 +2,14 @@ package com.bnksys.onemind.apis.services;
 
 import com.bnksys.onemind.apis.entities.Quiz;
 import com.bnksys.onemind.apis.repositories.QuizRepository;
+import com.bnksys.onemind.exceptions.CustomException;
+import com.bnksys.onemind.supports.codes.ErrorCode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.LinkedList;
+import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -17,48 +23,146 @@ public class RpaService {
 
     private final QuizRepository quizRepository;
 
+    @Transactional
     public Integer saveQuizFromGptAnswerProcedure(String gptAnswer) {
 
+        System.out.println("-----입력된 값------");
         System.out.println(gptAnswer);
-        List<Quiz> quizList = getQuizList(gptAnswer);
 
+        // 1. Convert to Map
+        List<Map<String, Object>> mapList = getMapFromObjectMapper(gptAnswer);
+
+        // 2. Quiz 가져오기
+        Map<String, Quiz> quizList = getQuizListFromMap(mapList);
+
+        // 3. Keyword 가져오기
+//        Map<String, List<String>> keywordList = getKeywordListFromMap(mapList);
+
+        System.out.println("-----JSON 형태 추출 결과------");
         System.out.println(quizList);
 
-        quizRepository.saveAll(quizList);
+//        quizRepository.saveAll(quizList);
 
         return quizList.size();
     }
 
+    private void getKeywordListFromMap(List<Map<String, Object>> mapList) {
+        Map<String, List<String>> mapForQuiz = new HashMap<>();
 
-    public List<Quiz> getQuizList(String gptAnswer) {
+//        for (Map<String, Object> map : mapList) {
+//
+//            // Handling level type Error (String || Integer)
+//            Integer level = null;
+//            if (map.containsKey("level")) {
+//                Object levelObj = map.get("level");
+//                level = checkInvalidLevelType(levelObj);
+//            }
+//
+//            Quiz newQuiz = Quiz.of(question, answer, commentary, level);
+//            mapForQuiz.put(question, newQuiz);
+//        }
+
+    }
+
+    private Map<String, Quiz> getQuizListFromMap(List<Map<String, Object>> mapList) {
+
+        Map<String, Quiz> mapForQuiz = new HashMap<>();
+
+        for (Map<String, Object> map : mapList) {
+            String question = map.containsKey("quiz") ? (String) map.get("quiz") : null;
+            String answer = map.containsKey("answer") ? (String) map.get("answer") : null;
+            String commentary =
+                map.containsKey("commentary") ? (String) map.get("commentary") : null;
+
+            // Handling filed name error
+            if (commentary == null || commentary.isEmpty()) {
+                commentary =
+                    map.containsKey("commentery") ? (String) map.get("commentery") : null;
+            }
+
+            // Handling level type Error (String || Integer)
+            Integer level = null;
+            if (map.containsKey("level")) {
+                Object levelObj = map.get("level");
+                level = checkInvalidLevelType(levelObj);
+            }
+
+            Quiz newQuiz = Quiz.of(question, answer, commentary, level);
+            mapForQuiz.put(question, newQuiz);
+        }
+
+        return mapForQuiz;
+    }
+
+    private List<Map<String, Object>> getMapFromObjectMapper(String gptAnswer) {
+
         Pattern pattern = Pattern.compile("\\{[^}]*\\}");
         Matcher matcher = pattern.matcher(gptAnswer);
 
         ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, Object>> mapList = new ArrayList<>();
 
-        List<Quiz> quizList = new LinkedList<>();
         while (matcher.find()) {
             try {
-                // 추출한 JSON 문자열
                 String json = matcher.group();
-
-                // JSON을 Map 객체로 변환
-                Map<String, Object> map = objectMapper.readValue(json, Map.class);
-
-                // 필드 추출
-                String question = (String) map.get("quiz");
-                String answer = (String) map.get("answer");
-                String commentary = (String) map.get("commentary");
-
-                Integer level = (Integer) map.get("level");
-
-                Quiz newQuiz = Quiz.of(question, answer, commentary, level);
-                quizList.add(newQuiz);
-            } catch (Exception e) {
-                e.printStackTrace();
+                Map<String, Object> map = objectMapper.readValue(json,
+                    new TypeReference<Map<String, Object>>() {
+                    });
+                mapList.add(map);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
             }
         }
+        return mapList;
+    }
 
-        return quizList;
+//    public List<Quiz> getQuizList(String gptAnswer) {
+//
+//        List<Quiz> quizList = new LinkedList<>();
+//        while (matcher.find()) {
+//            try {
+//                // 추출한 JSON 문자열
+//                String json = matcher.group();
+//
+//                // JSON convert to Map
+//                Map<String, Object> map = objectMapper.readValue(json, Map.class);
+//
+//                // extract field
+//
+//                // Handling Keyword
+//                List<String> keywords = new LinkedList<>();
+//                if (map.containsKey("keyword") && map.get("keyword") instanceof List<?>) {
+//                    // JSON 배열을 Java List<String>으로 변환
+//                    List<?> keywordObjList = (List<?>) map.get("keyword");
+//                    for (Object keywordObj : keywordObjList) {
+//                        if (keywordObj instanceof String) {
+//                            keywords.add((String) keywordObj);
+//                        }
+//                    }
+//                }
+//
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return quizList;
+//    }
+
+
+    private Integer checkInvalidLevelType(Object levelObj) {
+
+        Integer level = null;
+
+        if (levelObj instanceof Integer) {
+            level = (Integer) levelObj;
+        } else if (levelObj instanceof String) {
+            try {
+                level = Integer.parseInt((String) levelObj);
+            } catch (NumberFormatException ex) {
+                throw new CustomException(ErrorCode.INCORRECT_LEVEL_TYPE);
+            }
+        }
+        return level;
     }
 }
