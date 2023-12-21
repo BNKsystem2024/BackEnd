@@ -36,8 +36,7 @@ public class RpaService {
         Map<String, Quiz> quizList = getQuizListFromMap(mapList);
 
         // 3. Keyword 가져오기
-        Map<String, List<String>> keywordList = getKeywordListFromMap(mapList);
-
+//        Map<String, List<String>> keywordList = getKeywordListFromMap(mapList);
         System.out.println("-----JSON 형태 추출 결과------");
         System.out.println(quizList);
 
