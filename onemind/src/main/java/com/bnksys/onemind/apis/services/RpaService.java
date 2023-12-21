@@ -36,7 +36,7 @@ public class RpaService {
         Map<String, Quiz> quizList = getQuizListFromMap(mapList);
 
         // 3. Keyword 가져오기
-//        Map<String, List<String>> keywordList = getKeywordListFromMap(mapList);
+        Map<String, List<String>> keywordList = getKeywordListFromMap(mapList);
 
         System.out.println("-----JSON 형태 추출 결과------");
         System.out.println(quizList);
@@ -49,18 +49,17 @@ public class RpaService {
     private void getKeywordListFromMap(List<Map<String, Object>> mapList) {
         Map<String, List<String>> mapForQuiz = new HashMap<>();
 
-//        for (Map<String, Object> map : mapList) {
-//
-//            // Handling level type Error (String || Integer)
-//            Integer level = null;
-//            if (map.containsKey("level")) {
-//                Object levelObj = map.get("level");
-//                level = checkInvalidLevelType(levelObj);
-//            }
-//
-//            Quiz newQuiz = Quiz.of(question, answer, commentary, level);
+        for (Map<String, Object> map : mapList) {
+
+            // Handling level type Error (String || Integer)
+            Integer level = null;
+            if (map.containsKey("level")) {
+                Object levelObj = map.get("level");
+                level = checkInvalidLevelType(levelObj);
+            }
+
 //            mapForQuiz.put(question, newQuiz);
-//        }
+        }
 
     }
 
