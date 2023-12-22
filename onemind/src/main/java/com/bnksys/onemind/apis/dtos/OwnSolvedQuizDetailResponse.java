@@ -1,6 +1,5 @@
 package com.bnksys.onemind.apis.dtos;
 
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,19 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OwnSolvedQuizDetailResponse {
 
-    List<OwnSolvedQuizDetail> solvedQuizDetailList;
+    private String question;
 
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor
-    public static class OwnSolvedQuizDetail {
+    private String answer;
 
-        private String question;
+    private String commentary;
 
-        private String answer;
+    private Integer level;
 
-        private String commentary;
-
-        private Integer level;
-    }
 }

@@ -48,7 +48,7 @@ public class OwnController {
             return ApiResponseUtil.success(ownSolvedQuizListResponse);
         } else if (quizId != null && page == null) {
             OwnSolvedQuizDetailResponse ownSolvedQuizDetailResponse = ownService.getOwnSolvedQuizDetail(
-                userId, quizId);
+                quizId);
             return ApiResponseUtil.success(ownSolvedQuizDetailResponse);
         } else {
             throw new CustomException(ErrorCode.INVALID_TYPE_VALUE);

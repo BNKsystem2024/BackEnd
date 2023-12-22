@@ -3,7 +3,6 @@ package com.bnksys.onemind.apis.services;
 import com.bnksys.onemind.apis.dtos.OwnBadgesResponse;
 import com.bnksys.onemind.apis.dtos.OwnBadgesResponse.OwnBadge;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizDetailResponse;
-import com.bnksys.onemind.apis.dtos.OwnSolvedQuizDetailResponse.OwnSolvedQuizDetail;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizInfosResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse;
 import com.bnksys.onemind.apis.dtos.OwnSolvedQuizListResponse.OwnSolvedQuiz;
@@ -53,21 +52,16 @@ public class OwnService {
             solvedQuiz.getIsCorrect(), quiz.getLevel());
     }
 
-    public OwnSolvedQuizDetailResponse getOwnSolvedQuizDetail(Integer id, Long quizId) {
+    public OwnSolvedQuizDetailResponse getOwnSolvedQuizDetail(Long quizId) {
 
-        return new OwnSolvedQuizDetailResponse(
-            solvedProblemRepository.findByUserIdAndQuizId(id, quizId)
-                                   .stream()
-                                   .map(solvedProblem -> getOwnSolvedQuizDetail(solvedProblem))
-                                   .toList());
-    }
+        Quiz quiz = quizRepository.findById(quizId)
+                                  .get();
 
-    private OwnSolvedQuizDetail getOwnSolvedQuizDetail(Solved_problem solvedQuiz) {
-
-        Quiz quiz = solvedQuiz.getQuiz();
-
-        return new OwnSolvedQuizDetail(quiz.getQuestion(), quiz.getAnswer(), quiz.getCommentary(),
+        return new OwnSolvedQuizDetailResponse(quiz.getQuestion(),
+            quiz.getAnswer(),
+            quiz.getCommentary(),
             quiz.getLevel());
+
     }
 
     public OwnBadgesResponse getOwnBadges(Integer userId) {
