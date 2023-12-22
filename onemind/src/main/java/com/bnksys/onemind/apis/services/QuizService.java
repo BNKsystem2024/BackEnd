@@ -56,7 +56,7 @@ public class QuizService {
                                      .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         int isCorrectValue = isCorrect ? 1 : 0;
 
-        solvedProblemRepository.saveSolvedQuiz(1, quizId, solvedDate, isCorrectValue);
+        solvedProblemRepository.saveSolvedQuiz(userId, quizId, solvedDate, isCorrectValue);
         if (true == isCorrect) {
             int correctCount = solvedProblemRepository.countCorrectAnswers(userId);
             if (1 == correctCount) {
