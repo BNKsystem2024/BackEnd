@@ -3,6 +3,7 @@ package com.bnksys.onemind.apis.controllers;
 import com.bnksys.onemind.apis.dtos.LoginRequest;
 import com.bnksys.onemind.apis.dtos.RankersResponse;
 import com.bnksys.onemind.apis.dtos.UserInfoResponse;
+import com.bnksys.onemind.apis.dtos.UsernameAndBirthResponse;
 import com.bnksys.onemind.apis.entities.User;
 import com.bnksys.onemind.apis.services.SolvedProblemService;
 import com.bnksys.onemind.apis.services.UserService;
@@ -41,6 +42,14 @@ public class UserController {
         } catch (Exception e) {
             return ApiResponseUtil.error(ErrorCode.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    @GetMapping("/members/info")
+    public ResponseEntity<UsernameAndBirthResponse> getUsernameAndBirth(HttpSession session) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
+
+        return ApiResponseUtil.success(userService.getUsername(userId));
     }
 
     @PostMapping("/logout")
