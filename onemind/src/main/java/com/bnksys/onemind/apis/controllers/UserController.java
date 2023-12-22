@@ -2,6 +2,8 @@ package com.bnksys.onemind.apis.controllers;
 
 import com.bnksys.onemind.apis.dtos.LoginRequest;
 import com.bnksys.onemind.apis.dtos.RankersResponse;
+import com.bnksys.onemind.apis.dtos.UserInfoResponse;
+import com.bnksys.onemind.apis.entities.User;
 import com.bnksys.onemind.apis.services.SolvedProblemService;
 import com.bnksys.onemind.apis.services.UserService;
 import com.bnksys.onemind.supports.codes.ErrorCode;
@@ -29,10 +31,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpSession session, @RequestBody LoginRequest loginRequest) {
         try {
-            Boolean isExist = userService.authenticate_user(loginRequest.getUser_id(),
+            User user = userService.authenticate_user(loginRequest.getUser_id(),
                 loginRequest.getUser_password(), session);
-            if (isExist) {
-                return ApiResponseUtil.success();
+            if (user != null) {
+                return ApiResponseUtil.success(new UserInfoResponse(user));
             } else {
                 return ApiResponseUtil.error(ErrorCode.UNAUTHORIZED, "존재하는 유저가 없습니다.");
             }

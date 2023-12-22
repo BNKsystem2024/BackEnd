@@ -12,13 +12,13 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public Boolean authenticate_user(String userId, String password, HttpSession session) {
+    public User authenticate_user(String userId, String password, HttpSession session) {
         User user = userRepository.findByUserId(userId);
         if (user != null && user.getUserPassword()
                                 .equals(password)) {
             session.setAttribute("userId", user.getId());
-            return true;
+            return user;
         }
-        return false; // 사용자가 없거나 비밀번호가 일치하지 않는 경우
+        return null; // 사용자가 없거나 비밀번호가 일치하지 않는 경우
     }
 }
