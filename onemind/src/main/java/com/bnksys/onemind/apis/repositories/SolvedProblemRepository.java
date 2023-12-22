@@ -16,6 +16,8 @@ public interface SolvedProblemRepository extends JpaRepository<Solved_problem, L
 
     Page<Solved_problem> findByUserId(Integer userId, Pageable page);
 
+    Integer countByUserId(Integer userId);
+
     List<Solved_problem> findByUserIdAndQuizId(Integer userId, Long quizId);
 
     @Query(value = "SELECT user_id FROM (SELECT user_id, COUNT(*) as cnt FROM Solved_problem " +

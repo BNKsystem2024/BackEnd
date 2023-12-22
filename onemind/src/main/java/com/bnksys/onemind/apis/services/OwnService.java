@@ -28,11 +28,12 @@ public class OwnService {
     private final ReceivedBadgeRepository receivedBadgeRepository;
     private final QuizRepository quizRepository;
 
-    public OwnSolvedQuizListResponse getOwnSolvedQuizList(Integer id, Integer page) {
+    public OwnSolvedQuizListResponse getOwnSolvedQuizList(Integer userId, Integer page) {
 
         Pageable pageable = PageRequest.of(page - 1, 3);
+        Integer totalCnt = solvedProblemRepository.countByUserId(userId);
 
-        List<OwnSolvedQuiz> quizList = solvedProblemRepository.findByUserId(id, pageable)
+        List<OwnSolvedQuiz> quizList = solvedProblemRepository.findByUserId(userId, pageable)
                                                               .stream()
                                                               .map(
                                                                   solvedProblem -> getOwnSolvedQuiz(
@@ -40,7 +41,7 @@ public class OwnService {
                                                               .toList();
 
         return new OwnSolvedQuizListResponse(
-            quizList, quizList.size());
+            quizList, totalCnt);
     }
 
     private OwnSolvedQuiz getOwnSolvedQuiz(Solved_problem solvedQuiz) {
