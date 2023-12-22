@@ -32,11 +32,15 @@ public class OwnService {
 
         Pageable pageable = PageRequest.of(page - 1, 3);
 
+        List<OwnSolvedQuiz> quizList = solvedProblemRepository.findByUserId(id, pageable)
+                                                              .stream()
+                                                              .map(
+                                                                  solvedProblem -> getOwnSolvedQuiz(
+                                                                      solvedProblem))
+                                                              .toList();
+
         return new OwnSolvedQuizListResponse(
-            solvedProblemRepository.findByUserId(id, pageable)
-                                   .stream()
-                                   .map(solvedProblem -> getOwnSolvedQuiz(solvedProblem))
-                                   .toList());
+            quizList, quizList.size());
     }
 
     private OwnSolvedQuiz getOwnSolvedQuiz(Solved_problem solvedQuiz) {

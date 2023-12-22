@@ -13,12 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OwnSolvedQuizListResponse {
 
+
     private List<OwnSolvedQuiz> ownSolvedQuizList;
+
+    @JsonProperty("total_cnt")
+    private Integer totalCnt;
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class OwnSolvedQuiz {
+
 
         @JsonProperty("question")
         private String question;
