@@ -47,9 +47,10 @@ public class OwnService {
     private OwnSolvedQuiz getOwnSolvedQuiz(Solved_problem solvedQuiz) {
 
         Quiz quiz = solvedQuiz.getQuiz();
+        Long quizId = quiz.getId();
 
-        return new OwnSolvedQuiz(quiz.getQuestion(),
-            solvedQuiz.getSolvedDate(), solvedQuiz.getIsCorrect(), quiz.getLevel());
+        return new OwnSolvedQuiz(quizId, quiz.getQuestion(), solvedQuiz.getSolvedDate(),
+            solvedQuiz.getIsCorrect(), quiz.getLevel());
     }
 
     public OwnSolvedQuizDetailResponse getOwnSolvedQuizDetail(Integer id, Long quizId) {

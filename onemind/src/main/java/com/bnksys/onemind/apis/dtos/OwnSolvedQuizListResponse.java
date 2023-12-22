@@ -24,6 +24,8 @@ public class OwnSolvedQuizListResponse {
     @AllArgsConstructor
     public static class OwnSolvedQuiz {
 
+        @JsonProperty("quizId")
+        private Long quizId;
 
         @JsonProperty("question")
         private String question;
