@@ -74,12 +74,10 @@ public class QuizService {
     }
 
     public int determineLevel(int age) {
-        if (age <= 19) {
+        if (age <= 24) {
             return 1;
-        } else if (age <= 29) {
-            return 2;
         } else {
-            return 3;
+            return 2;
         }
     }
 
