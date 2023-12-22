@@ -8,6 +8,7 @@ import com.bnksys.onemind.apis.services.OwnService;
 import com.bnksys.onemind.exceptions.CustomException;
 import com.bnksys.onemind.supports.codes.ErrorCode;
 import com.bnksys.onemind.supports.responses.ApiResponseUtil;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,31 +21,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OwnController {
 
-    private final Integer id = 1;
     private final OwnService ownService;
 
     @GetMapping(value = "/badges")
-    public ResponseEntity<OwnBadgesResponse> getOwnBadges() {
+    public ResponseEntity<OwnBadgesResponse> getOwnBadges(HttpSession session) {
 
-        OwnBadgesResponse ownBadgesResponse = ownService.getOwnBadges(id);
+        Integer userId = (Integer) session.getAttribute("userId");
+//        System.out.println("bage, userId: :" + userId);
+        OwnBadgesResponse ownBadgesResponse = ownService.getOwnBadges(userId);
 
         return ApiResponseUtil.success(ownBadgesResponse);
     }
 
     @GetMapping(value = "/quizzes/solved")
     public ResponseEntity<?> getOwnSolvedQuizzes(
+        HttpSession session,
         @RequestParam(required = false, name = "page") Integer page,
         @RequestParam(required = false, name = "quiz_id") Long quizId
-
     ) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
 
         if (page != null && quizId == null) {
             OwnSolvedQuizListResponse ownSolvedQuizListResponse = ownService.getOwnSolvedQuizList(
-                id, page);
+                userId, page);
             return ApiResponseUtil.success(ownSolvedQuizListResponse);
         } else if (quizId != null && page == null) {
             OwnSolvedQuizDetailResponse ownSolvedQuizDetailResponse = ownService.getOwnSolvedQuizDetail(
-                id, quizId);
+                userId, quizId);
             return ApiResponseUtil.success(ownSolvedQuizDetailResponse);
         } else {
             throw new CustomException(ErrorCode.INVALID_TYPE_VALUE);
@@ -52,10 +56,13 @@ public class OwnController {
     }
 
     @GetMapping(value = "/quizzes/solved/infos")
-    public ResponseEntity<OwnSolvedQuizInfosResponse> getOwnSolvedQuizInfos() {
+    public ResponseEntity<OwnSolvedQuizInfosResponse> getOwnSolvedQuizInfos(HttpSession session) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
 
         OwnSolvedQuizInfosResponse ownSolvedQuizInfosResponse = ownService.getOwnSolvedQuizInfos(
-            id);
+            userId);
+
         // TODO: 문제의 푼 문제 전체 개수 대비 정답 퍼센트, 오답 개수, 정답 개수
         return ApiResponseUtil.success(ownSolvedQuizInfosResponse);
     }
