@@ -14,7 +14,7 @@ public interface ReceivedBadgeRepository extends JpaRepository<Received_badge, L
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO Received_badge (user_id, badge_id) VALUES (1, :badgeId)", nativeQuery = true)
-    void saveReceived_Badge(@Param("badgeId") int badgeId);
+    @Query(value = "INSERT INTO Received_badge (user_id, badge_id) VALUES (:userId, :badgeId)", nativeQuery = true)
+    void saveReceived_Badge(@Param("badgeId") int badgeId, @Param("userId") int userId);
 
 }

@@ -60,13 +60,13 @@ public class QuizService {
         if (true == isCorrect) {
             int correctCount = solvedProblemRepository.countCorrectAnswers(userId);
             if (1 == correctCount) {
-                receivedBadgeRepository.saveReceived_Badge(1);
+                receivedBadgeRepository.saveReceived_Badge(1, userId);
             } else if (10 == correctCount) {
-                receivedBadgeRepository.saveReceived_Badge(2);
+                receivedBadgeRepository.saveReceived_Badge(2, userId);
             } else if (20 == correctCount) {
-                receivedBadgeRepository.saveReceived_Badge(3);
+                receivedBadgeRepository.saveReceived_Badge(3, userId);
             } else if (30 == correctCount) {
-                receivedBadgeRepository.saveReceived_Badge(4);
+                receivedBadgeRepository.saveReceived_Badge(4, userId);
             }
         }
 
