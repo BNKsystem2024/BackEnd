@@ -32,7 +32,8 @@ public class OwnService {
         Pageable pageable = PageRequest.of(page - 1, 3);
         Integer totalCnt = solvedProblemRepository.countByUserId(userId);
 
-        List<OwnSolvedQuiz> quizList = solvedProblemRepository.findByUserId(userId, pageable)
+        List<OwnSolvedQuiz> quizList = solvedProblemRepository.findByUserIdOrderByIdDesc(userId,
+                                                                  pageable)
                                                               .stream()
                                                               .map(
                                                                   solvedProblem -> getOwnSolvedQuiz(
