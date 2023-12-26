@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface SolvedProblemRepository extends JpaRepository<Solved_problem, Long> {
 
-    Page<Solved_problem> findByUserId(Integer userId, Pageable page);
+    Page<Solved_problem> findByUserIdOrderByIdDesc(Integer userId, Pageable page);
 
     Integer countByUserId(Integer userId);
 
